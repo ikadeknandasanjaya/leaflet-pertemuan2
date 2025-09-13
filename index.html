@@ -1,9 +1,35 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peta Kampus PSTI Universitas Udayana Jimbaran</title>
+    <title>Peta Kampus Universitas Udayana Jimbaran</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -13,63 +39,32 @@
     <!-- Font Awesome untuk icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <!-- Custom CSS -->
     <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
         body {
             margin: 0;
-            padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header h1 {
-            color: #2c3e50;
-            margin: 0 0 10px 0;
-        }
-        
-        .header p {
-            color: #7f8c8d;
-            margin: 5px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
         
         #map {
-            height: 600px;
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        
-        .info-panel {
-            background: white;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .legend {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 5px 10px;
-            background: #f8f9fa;
+            height: 70vh;
             border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .legend-icon {
@@ -81,6 +76,7 @@
             justify-content: center;
             color: white;
             font-size: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         
         /* Warna untuk setiap kategori */
@@ -153,8 +149,10 @@
         
         /* Popup styling */
         .leaflet-popup-content-wrapper {
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
         }
         
         .popup-content {
@@ -166,13 +164,14 @@
             margin: 5px 0;
             color: #2c3e50;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
         }
         
         .popup-subtitle {
             margin: 5px 0;
             color: #34495e;
             font-size: 14px;
+            font-weight: 500;
         }
         
         .popup-address {
@@ -180,67 +179,207 @@
             color: #7f8c8d;
             font-size: 12px;
         }
+        
+        .floating-card {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
-<body>
-    <div class="header">
-        <h1>Peta Kampus Program Studi Teknologi Informasi</h1>
-        <p>Universitas Udayana - Jimbaran, Bali</p>
-        <p><strong>Tugas Praktik:</strong> Dasar Web Mapping dengan Leaflet</p>
-    </div>
+<body class="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-800 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="glass-effect backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white/20 p-2 rounded-lg">
+                        <i class="fas fa-map-marked-alt text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-white text-lg font-semibold">Campus Map</h1>
+                        <p class="text-white/70 text-sm">Universitas Udayana</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="darkModeToggle" class="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-all duration-300">
+                        <i class="fas fa-moon text-white"></i>
+                    </button>
+                    <button id="fullscreenBtn" class="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-all duration-300">
+                        <i class="fas fa-expand text-white"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    <div id="map"></div>
-    
-    <div class="info-panel">
-        <h3>Legenda Lokasi</h3>
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-icon university">
-                    <i class="fas fa-university"></i>
-                </div>
-                <span>Universitas & Rektorat</span>
+    <div class="max-w-7xl mx-auto p-6 space-y-6">
+        <!-- Hero Section -->
+        <div class="glass-effect rounded-3xl p-8 text-center animate-slide-up floating-card">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4">
+                <i class="fas fa-graduation-cap text-white text-2xl"></i>
             </div>
-            <div class="legend-item">
-                <div class="legend-icon faculty">
-                    <i class="fas fa-building-columns"></i>
-                </div>
-                <span>Fakultas</span>
+            <h1 class="text-4xl font-bold text-white mb-2">
+                Peta Kampus Jimbaran
+            </h1>
+            <p class="text-white/80 text-lg mb-1">Universitas Udayana - Jimbaran, Bali</p>
+            <div class="inline-flex items-center bg-white/20 rounded-full px-4 py-2 mt-4">
+                <i class="fas fa-map text-white/70 mr-2"></i>
+                <span class="text-white/90 font-medium">Tugas Praktik: Web Mapping dengan Leaflet</span>
             </div>
-            <div class="legend-item">
-                <div class="legend-icon program">
-                    <i class="fas fa-graduation-cap"></i>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Sidebar Legend -->
+            <div class="lg:col-span-1 space-y-4">
+                <div class="glass-effect rounded-2xl p-6 animate-fade-in">
+                    <h3 class="text-white text-xl font-semibold mb-4 flex items-center">
+                        <i class="fas fa-list-ul mr-2"></i>
+                        Legenda Lokasi
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                            <div class="legend-icon university">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <span class="text-white font-medium">Universitas & Rektorat</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                            <div class="legend-icon faculty">
+                                <i class="fas fa-building-columns"></i>
+                            </div>
+                            <span class="text-white font-medium">Fakultas</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                            <div class="legend-icon program">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <span class="text-white font-medium">Program Studi</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                            <div class="legend-icon library">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <span class="text-white font-medium">Perpustakaan & Lab</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                            <div class="legend-icon food">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <span class="text-white font-medium">Tempat Makan</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                            <div class="legend-icon transport">
+                                <i class="fas fa-bus"></i>
+                            </div>
+                            <span class="text-white font-medium">Transportasi</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                            <div class="legend-icon public">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <span class="text-white font-medium">Tempat Umum</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                            <div class="legend-icon health">
+                                <i class="fas fa-hospital"></i>
+                            </div>
+                            <span class="text-white font-medium">Fasilitas Kesehatan</span>
+                        </div>
+                    </div>
                 </div>
-                <span>Program Studi</span>
+
+                <!-- Statistics Card -->
+                <div class="glass-effect rounded-2xl p-6 animate-fade-in">
+                    <h3 class="text-white text-xl font-semibold mb-4 flex items-center">
+                        <i class="fas fa-chart-bar mr-2"></i>
+                        Statistik
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-xl">
+                            <span class="text-white/90">Total Lokasi</span>
+                            <span class="text-white font-bold text-2xl">31</span>
+                        </div>
+                        <div class="text-sm text-white/80 space-y-2">
+                            <div class="flex justify-between">
+                                <span>🏛️ Universitas</span>
+                                <span class="font-semibold">1</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>🏢 Fakultas</span>
+                                <span class="font-semibold">8</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>🎓 Program Studi</span>
+                                <span class="font-semibold">7</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>📚 Perpustakaan/Lab</span>
+                                <span class="font-semibold">2</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>🍽️ Tempat Makan</span>
+                                <span class="font-semibold">4</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>🚌 Transportasi</span>
+                                <span class="font-semibold">2</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>📍 Tempat Umum</span>
+                                <span class="font-semibold">3</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>🏥 Fasilitas Kesehatan</span>
+                                <span class="font-semibold">2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="legend-item">
-                <div class="legend-icon library">
-                    <i class="fas fa-book"></i>
+
+            <!-- Map Container -->
+            <div class="lg:col-span-3">
+                <div class="glass-effect rounded-2xl p-6 animate-slide-up">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-white text-2xl font-semibold flex items-center">
+                            <i class="fas fa-map-marked-alt mr-3"></i>
+                            Peta Interaktif
+                        </h2>
+                        <div class="flex space-x-2">
+                            <button id="centerMapBtn" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-white transition-all duration-300">
+                                <i class="fas fa-crosshairs mr-2"></i>
+                                Center
+                            </button>
+                            <button id="layerToggle" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-white transition-all duration-300">
+                                <i class="fas fa-layer-group mr-2"></i>
+                                Layers
+                            </button>
+                        </div>
+                    </div>
+                    <div id="map" class="animate-fade-in"></div>
                 </div>
-                <span>Perpustakaan & Lab</span>
             </div>
-            <div class="legend-item">
-                <div class="legend-icon food">
-                    <i class="fas fa-utensils"></i>
+        </div>
+
+        <!-- Footer -->
+        <div class="glass-effect rounded-2xl p-6 text-center animate-fade-in">
+            <div class="flex items-center justify-center space-x-6">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-calendar text-white/70"></i>
+                    <span class="text-white/90">September 2025</span>
                 </div>
-                <span>Tempat Makan</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-icon transport">
-                    <i class="fas fa-bus"></i>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-user-graduate text-white/70"></i>
+                    <span class="text-white/90">Tugas GIS</span>
                 </div>
-                <span>Transportasi</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-icon public">
-                    <i class="fas fa-map-marker-alt"></i>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-code text-white/70"></i>
+                    <span class="text-white/90">Leaflet.js</span>
                 </div>
-                <span>Tempat Umum</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-icon health">
-                    <i class="fas fa-hospital"></i>
-                </div>
-                <span>Fasilitas Kesehatan</span>
             </div>
         </div>
     </div>
@@ -605,30 +744,54 @@
             }
         });
         
-        // Info popup untuk statistik
-        var infoControl = L.control({position: 'topright'});
-        infoControl.onAdd = function(map) {
-            var div = L.DomUtil.create('div', 'info-control');
-            div.style.background = 'white';
-            div.style.padding = '10px';
-            div.style.borderRadius = '5px';
-            div.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
-            div.innerHTML = '<h4>Total Lokasi: 31</h4>' +
-                           '<small>🏛️ Universitas: 1<br>' +
-                           '🏢 Fakultas: 8<br>' +
-                           '🎓 Program Studi: 7<br>' +
-                           '📚 Perpustakaan/Lab: 2<br>' +
-                           '🍽️ Tempat Makan: 4<br>' +
-                           '🚌 Transportasi: 2<br>' +
-                           '📍 Tempat Umum: 3<br>' +
-                           '🏥 Fasilitas Kesehatan: 2</small>';
-            return div;
-        };
-        infoControl.addTo(map);
+        // Interactive buttons functionality
+        document.getElementById('centerMapBtn').addEventListener('click', function() {
+            map.setView([-8.796403, 115.176320], 16);
+        });
         
-        console.log('Peta dengan 29 lokasi berhasil dimuat!');
-        console.log('Fokus: Program Studi Teknologi Informasi, Universitas Udayana, Jimbaran');
-        console.log('Koordinat semua lokasi telah diperbarui sesuai data yang diberikan');
+        document.getElementById('fullscreenBtn').addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                this.innerHTML = '<i class="fas fa-compress text-white"></i>';
+            } else {
+                document.exitFullscreen();
+                this.innerHTML = '<i class="fas fa-expand text-white"></i>';
+            }
+        });
+        
+        document.getElementById('darkModeToggle').addEventListener('click', function() {
+            // Toggle dark mode (placeholder for future implementation)
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('fa-moon')) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+        
+        // Add loading animation
+        const mapContainer = document.getElementById('map');
+        mapContainer.style.opacity = '0';
+        mapContainer.style.transition = 'opacity 1s ease-in-out';
+        
+        setTimeout(() => {
+            mapContainer.style.opacity = '1';
+        }, 500);
+        
+        // Legend item click functionality
+        document.querySelectorAll('.legend-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Add ripple effect
+                this.classList.add('transform', 'scale-105');
+                setTimeout(() => {
+                    this.classList.remove('transform', 'scale-105');
+                }, 200);
+            });
+        });
+        
+        console.log('🗺️ Peta modern dengan 31 lokasi berhasil dimuat!');
+        console.log('🎓 Fokus: Program Studi Teknologi Informasi, Universitas Udayana, Jimbaran');
+        console.log('✨ UI Modern dengan Tailwind CSS dan Glassmorphism aktif');
     </script>
 </body>
 </html>
