@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Kampus PSTI Universitas Udayana Jimbaran</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    
+    <!-- Font Awesome untuk icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+        
+        #map {
+            height: 600px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .info-panel {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px;
+            background: #f8f9fa;
+            border-radius: 20px;
+        }
+        
+        .legend-icon {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        /* Warna untuk setiap kategori */
+        .university { background-color: #8e44ad; }
+        .faculty { background-color: #e74c3c; }
+        .program { background-color: #3498db; }
+        .library { background-color: #27ae60; }
+        .food { background-color: #f39c12; }
+        .transport { background-color: #34495e; }
+        .public { background-color: #95a5a6; }
+        .health { background-color: #e91e63; }
+        
+        /* Custom marker styles */
+        .custom-marker {
+            background: none !important;
+            border: none !important;
+        }
+        
+        .marker-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            border: 3px solid white;
+            position: relative;
+        }
+        
+        .marker-icon::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid inherit;
+        }
+        
+        .university-icon { background-color: #8e44ad; }
+        .university-icon::after { border-top-color: #8e44ad; }
+        
+        .faculty-icon { background-color: #e74c3c; }
+        .faculty-icon::after { border-top-color: #e74c3c; }
+        
+        .program-icon { background-color: #3498db; }
+        .program-icon::after { border-top-color: #3498db; }
+        
+        .library-icon { background-color: #27ae60; }
+        .library-icon::after { border-top-color: #27ae60; }
+        
+        .food-icon { background-color: #f39c12; }
+        .food-icon::after { border-top-color: #f39c12; }
+        
+        .transport-icon { background-color: #34495e; }
+        .transport-icon::after { border-top-color: #34495e; }
+        
+        .public-icon { background-color: #95a5a6; }
+        .public-icon::after { border-top-color: #95a5a6; }
+        
+        .health-icon { background-color: #e91e63; }
+        .health-icon::after { border-top-color: #e91e63; }
+        
+        /* Popup styling */
+        .leaflet-popup-content-wrapper {
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .popup-content {
+            text-align: center;
+            padding: 5px;
+        }
+        
+        .popup-title {
+            margin: 5px 0;
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .popup-subtitle {
+            margin: 5px 0;
+            color: #34495e;
+            font-size: 14px;
+        }
+        
+        .popup-address {
+            margin: 5px 0;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Peta Kampus Program Studi Teknologi Informasi</h1>
+        <p>Universitas Udayana - Jimbaran, Bali</p>
+        <p><strong>Tugas Praktik:</strong> Dasar Web Mapping dengan Leaflet</p>
+    </div>
+
+    <div id="map"></div>
+    
+    <div class="info-panel">
+        <h3>Legenda Lokasi</h3>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-icon university">
+                    <i class="fas fa-university"></i>
+                </div>
+                <span>Universitas & Rektorat</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon faculty">
+                    <i class="fas fa-building-columns"></i>
+                </div>
+                <span>Fakultas</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon program">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span>Program Studi</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon library">
+                    <i class="fas fa-book"></i>
+                </div>
+                <span>Perpustakaan & Lab</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon food">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <span>Tempat Makan</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon transport">
+                    <i class="fas fa-bus"></i>
+                </div>
+                <span>Transportasi</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon public">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <span>Tempat Umum</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon health">
+                    <i class="fas fa-hospital"></i>
+                </div>
+                <span>Fasilitas Kesehatan</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    
+    <script>
+        // Inisialisasi peta dengan fokus pada kampus PSTI Unud
+        var map = L.map('map').setView([-8.796403, 115.176320], 16);
+        
+        // Menambahkan tile layer OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+        
+        // Fungsi untuk membuat custom icon
+        function createCustomIcon(iconClass, faIcon) {
+            return L.divIcon({
+                className: 'custom-marker',
+                html: `<div class="marker-icon ${iconClass}">
+                         <i class="fas ${faIcon}"></i>
+                       </div>`,
+                iconSize: [35, 43],
+                iconAnchor: [17, 43],
+                popupAnchor: [0, -43]
+            });
+        }
+        
+        // Custom icons untuk berbagai kategori
+        var universityIcon = createCustomIcon('university-icon', 'fa-university');
+        var facultyIcon = createCustomIcon('faculty-icon', 'fa-building-columns');
+        var programIcon = createCustomIcon('program-icon', 'fa-graduation-cap');
+        var libraryIcon = createCustomIcon('library-icon', 'fa-book');
+        var foodIcon = createCustomIcon('food-icon', 'fa-utensils');
+        var transportIcon = createCustomIcon('transport-icon', 'fa-bus');
+        var publicIcon = createCustomIcon('public-icon', 'fa-map-marker-alt');
+        var healthIcon = createCustomIcon('health-icon', 'fa-hospital');
+        var spbuIcon = createCustomIcon('public-icon', 'fa-gas-pump');
+        var atmIcon = createCustomIcon('public-icon', 'fa-credit-card');
+        var futsalIcon = createCustomIcon('public-icon', 'fa-futbol');
+        
+        // === PROGRAM STUDI ===
+        // Program Studi Teknologi Informasi (Kampus Utama)
+        L.marker([-8.796403092016464, 115.17632040062182], {icon: programIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Program Studi Teknologi Informasi</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+                <div class="popup-address">Kampus Utama - Jimbaran</div>
+            </div>
+        `);
+        
+        // Program Studi Teknik Elektro
+        L.marker([-8.796347970767345, 115.1772389020036], {icon: programIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Program Studi Teknik Elektro</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Program Studi Arsitektur
+        L.marker([-8.795682816403565, 115.17695356160637], {icon: programIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Program Studi Arsitektur</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Program Studi Teknik Mesin
+        L.marker([-8.795394572340312, 115.17695866113993], {icon: programIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Program Studi Teknik Mesin</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Program Studi Teknik Sipil
+        L.marker([-8.797991679028675, 115.1758714411295], {icon: programIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Program Studi Teknik Sipil</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Program Studi Teknik Lingkungan
+        L.marker([-8.79797983316711, 115.17576276870889], {icon: programIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Program Studi Teknik Lingkungan</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Program Studi Teknik Industri
+        L.marker([-8.795837217664175, 115.17723876473167], {icon: programIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Program Studi Teknik Industri</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // === FAKULTAS ===
+        // Fakultas Teknik Universitas Udayana
+        L.marker([-8.79607057355755, 115.17617551931117], {icon: facultyIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Fakultas Teknik</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Fakultas Peternakan
+        L.marker([-8.791393531132098, 115.17833714638648], {icon: facultyIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Fakultas Peternakan</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Fakultas Pertanian
+        L.marker([-8.79313032540747, 115.17790187328221], {icon: facultyIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Fakultas Pertanian</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Fakultas Teknologi Pertanian
+        L.marker([-8.798259416805799, 115.17030885448725], {icon: facultyIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Fakultas Teknologi Pertanian</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Fakultas Kelautan dan Perikanan
+        L.marker([-8.797872092579976, 115.17012740267327], {icon: facultyIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Fakultas Kelautan dan Perikanan</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Fakultas Matematika dan Ilmu Pengetahuan Alam
+        L.marker([-8.79931021105351, 115.17069353233283], {icon: facultyIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Fakultas MIPA</div>
+                <div class="popup-subtitle">Matematika dan Ilmu Pengetahuan Alam</div>
+                <div class="popup-address">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Fakultas Ekonomi dan Bisnis
+        L.marker([-8.799337957602408, 115.16928457408397], {icon: facultyIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Fakultas Ekonomi dan Bisnis</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Fakultas Kedokteran Hewan
+        L.marker([-8.800474913980532, 115.17671227743183], {icon: facultyIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Fakultas Kedokteran Hewan</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // Fakultas Ilmu Sosial dan Politik
+        L.marker([-8.800782727841034, 115.17720888793832], {icon: facultyIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Fakultas Ilmu Sosial dan Politik</div>
+                <div class="popup-subtitle">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // === UNIVERSITAS & REKTORAT ===
+        // Rektorat Universitas Udayana
+        L.marker([-8.79836351921637, 115.1724474876934], {icon: universityIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Rektorat Universitas Udayana</div>
+                <div class="popup-subtitle">Pusat Administrasi</div>
+                <div class="popup-address">Kampus Jimbaran</div>
+            </div>
+        `);
+        
+        // === PERPUSTAKAAN & LABORATORIUM ===
+        // Perpustakaan Universitas Udayana
+        L.marker([-8.798976330913836, 115.17279296174212], {icon: libraryIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Perpustakaan Universitas Udayana</div>
+                <div class="popup-subtitle">Perpustakaan Pusat</div>
+                <div class="popup-address">Koleksi buku dan jurnal ilmiah</div>
+            </div>
+        `);
+        
+        // Advanced Research Laboratory
+        L.marker([-8.795306489576143, 115.17660981819725], {icon: libraryIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Advanced Research Laboratory</div>
+                <div class="popup-subtitle">Laboratorium Penelitian</div>
+                <div class="popup-address">Universitas Udayana</div>
+            </div>
+        `);
+        
+        // === TEMPAT MAKAN ===
+        // GOGO Fried Chicken
+        L.marker([-8.799891787189855, 115.16735864205626], {icon: foodIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">GOGO Fried Chicken</div>
+                <div class="popup-subtitle">Restoran Cepat Saji</div>
+                <div class="popup-address">Ayam goreng dan menu cepat saji</div>
+            </div>
+        `);
+        
+        // Journey Taste
+        L.marker([-8.799379672228794, 115.16522604697276], {icon: foodIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Journey Taste</div>
+                <div class="popup-subtitle">Restoran</div>
+                <div class="popup-address">Berbagai menu makanan</div>
+            </div>
+        `);
+        
+        // Warung Puspa
+        L.marker([-8.80206655905205, 115.17229247129097], {icon: foodIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Warung Puspa</div>
+                <div class="popup-subtitle">Warung Makan</div>
+                <div class="popup-address">Makanan tradisional Indonesia</div>
+            </div>
+        `);
+        
+        // Tempong Bersama
+        L.marker([-8.789090400543259, 115.17342498545561], {icon: foodIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Tempong Bersama</div>
+                <div class="popup-subtitle">Warung Makan</div>
+                <div class="popup-address">Makanan lokal dan nusantara</div>
+            </div>
+        `);
+        
+        // === TRANSPORTASI ===
+        // Halte Fakultas Teknik Barat
+        L.marker([-8.795201388878578, 115.17564665525767], {icon: transportIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Halte Fakultas Teknik Barat</div>
+                <div class="popup-subtitle">Halte Bus</div>
+                <div class="popup-address">Transportasi umum kampus</div>
+            </div>
+        `);
+        
+        // Halte Fakultas Teknik Timur
+        L.marker([-8.79568075312594, 115.17565497166584], {icon: transportIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Halte Fakultas Teknik Timur</div>
+                <div class="popup-subtitle">Halte Bus</div>
+                <div class="popup-address">Transportasi umum kampus</div>
+            </div>
+        `);
+        
+        // === TEMPAT UMUM ===
+        // Nuansa Futsal
+        L.marker([-8.799684907993436, 115.18162916697617], {icon: futsalIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Nuansa Futsal</div>
+                <div class="popup-subtitle">Lapangan Futsal</div>
+                <div class="popup-address">Fasilitas olahraga</div>
+            </div>
+        `);
+        
+        // ATM BNI Drive Thru
+        L.marker([-8.799973041084149, 115.17122616428638], {icon: atmIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">ATM BNI Drive Thru</div>
+                <div class="popup-subtitle">Layanan Perbankan</div>
+                <div class="popup-address">ATM dengan layanan drive thru</div>
+            </div>
+        `);
+        
+        // Pertamina
+        L.marker([-8.797902378340375, 115.16118720058299], {icon: spbuIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">SPBU Pertamina</div>
+                <div class="popup-subtitle">Stasiun Pengisian BBM</div>
+                <div class="popup-address">Bahan bakar minyak</div>
+            </div>
+        `);
+        
+        // === FASILITAS KESEHATAN ===
+        // Rumah Sakit Universitas Udayana
+        L.marker([-8.790013064293552, 115.1741632292325], {icon: healthIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">Rumah Sakit Universitas Udayana</div>
+                <div class="popup-subtitle">RS Pendidikan</div>
+                <div class="popup-address">Fasilitas kesehatan dan pendidikan kedokteran</div>
+            </div>
+        `);
+        
+        // RSU Bali Jimbaran
+        L.marker([-8.790789152728497, 115.17686940125475], {icon: healthIcon}).addTo(map)
+        .bindPopup(`
+            <div class="popup-content">
+                <div class="popup-title">RSU Bali Jimbaran</div>
+                <div class="popup-subtitle">Rumah Sakit Umum</div>
+                <div class="popup-address">Layanan kesehatan masyarakat</div>
+            </div>
+        `);
+        
+        // Event handler untuk interaktivitas
+        map.on('click', function(e) {
+            console.log('Koordinat yang diklik: ' + e.latlng.toString());
+        });
+        
+        // Menambahkan kontrol scale
+        L.control.scale({
+            imperial: false,
+            metric: true
+        }).addTo(map);
+        
+        // Menampilkan koordinat mouse di title
+        map.on('mousemove', function(e) {
+            document.title = 'Lat: ' + e.latlng.lat.toFixed(4) + ', Lng: ' + e.latlng.lng.toFixed(4);
+        });
+        
+        // Animasi saat marker diklik
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) {
+                layer.on('click', function(e) {
+                    map.setView(e.latlng, 18, {animate: true, duration: 1});
+                });
+            }
+        });
+        
+        // Info popup untuk statistik
+        var infoControl = L.control({position: 'topright'});
+        infoControl.onAdd = function(map) {
+            var div = L.DomUtil.create('div', 'info-control');
+            div.style.background = 'white';
+            div.style.padding = '10px';
+            div.style.borderRadius = '5px';
+            div.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+            div.innerHTML = '<h4>Total Lokasi: 31</h4>' +
+                           '<small>🏛️ Universitas: 1<br>' +
+                           '🏢 Fakultas: 8<br>' +
+                           '🎓 Program Studi: 7<br>' +
+                           '📚 Perpustakaan/Lab: 2<br>' +
+                           '🍽️ Tempat Makan: 4<br>' +
+                           '🚌 Transportasi: 2<br>' +
+                           '📍 Tempat Umum: 3<br>' +
+                           '🏥 Fasilitas Kesehatan: 2</small>';
+            return div;
+        };
+        infoControl.addTo(map);
+        
+        console.log('Peta dengan 29 lokasi berhasil dimuat!');
+        console.log('Fokus: Program Studi Teknologi Informasi, Universitas Udayana, Jimbaran');
+        console.log('Koordinat semua lokasi telah diperbarui sesuai data yang diberikan');
+    </script>
+</body>
+</html>
