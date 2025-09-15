@@ -1,4 +1,4 @@
-# 🗺️ Peta Kampus PSTI Universitas Udayana
+# 🗺️ Peta Kampus Jimbaran Universitas Udayana
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://kampusjimbaranmarker.netlify.app/)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
@@ -7,7 +7,7 @@
 [![Leaflet](https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=leaflet&logoColor=white)](https://leafletjs.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-> **Interactive Campus Map** untuk Program Studi Teknologi Informasi, Universitas Udayana - Jimbaran, Bali
+> **Interactive Campus Map** untuk Kampus Jimbaran, Universitas Udayana - Bali
 
 ## 🚀 Live Demo
 
@@ -163,8 +163,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## 👨‍💻 Author
 
 **[Your Name]**
-- 🎓 Program Studi Teknologi Informasi
-- 🏛️ Universitas Udayana
+- 🎓 Mahasiswa Universitas Udayana
+- 🏛️ Kampus Jimbaran, Bali
 - 📧 Email: your.email@example.com
 - 💼 LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
 
