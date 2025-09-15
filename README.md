@@ -158,7 +158,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 - 🎓 Mahasiswa Universitas Udayana
 - 🏛️ Kampus Jimbaran, Bali
 - 📧 Email: nandacomp1075@gmail.com
-- 💼 LinkedIn: [Your LinkedIn](https://linkedin.com/in/ikdknandasanjaya)
+- 💼 LinkedIn: [My Linkedin](https://linkedin.com/in/ikdknandasanjaya)
 
 ## 🙏 Acknowledgments
 
