@@ -13,23 +13,17 @@
 
 **🌐 [Kunjungi Peta Interaktif](https://kampusjimbaranmarker.netlify.app/)**
 
+atau ke https://kampusjimbaranmarker.netlify.app
+
 ## 📸 Screenshots
 
-### Desktop View
-![Desktop Screenshot](screenshots/desktop-view.png)
-*Tampilan desktop dengan sidebar legend dan peta interaktif*
+### Desktop View - Full Interface
+![Desktop Screenshot](screenshots/Screenshot%202025-09-13%20at%2023.56.03.png)
+*Tampilan lengkap dengan glassmorphism design, sidebar legend, dan peta interaktif*
 
-### Mobile View
-![Mobile Screenshot](screenshots/mobile-view.png)
-*Responsive design untuk perangkat mobile*
-
-### Map Markers
-![Map Markers](screenshots/map-markers.png)
-*Custom icons untuk berbagai kategori lokasi*
-
-### Popup Information
-![Popup Info](screenshots/popup-info.png)
-*Detail informasi lokasi dalam popup yang modern*
+### Map Detail View  
+![Map Detail](screenshots/Screenshot%202025-09-13%20at%2023.56.08.png)
+*Detail peta dengan custom markers dan popup informasi lokasi kampus*
 
 ## ✨ Features
 
@@ -92,10 +86,8 @@ leaflet-pertemuan2/
 ├── index.html          # Main HTML file
 ├── README.md           # Project documentation
 ├── screenshots/        # Screenshot images
-│   ├── desktop-view.png
-│   ├── mobile-view.png
-│   ├── map-markers.png
-│   └── popup-info.png
+│   ├── Screenshot 2025-09-13 at 23.56.03.png
+│   └── Screenshot 2025-09-13 at 23.56.08.png
 └── .git/              # Git repository
 ```
 
@@ -162,11 +154,11 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 👨‍💻 Author
 
-**[Your Name]**
+**I Kadek Nanda Sanjaya**
 - 🎓 Mahasiswa Universitas Udayana
 - 🏛️ Kampus Jimbaran, Bali
-- 📧 Email: your.email@example.com
-- 💼 LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+- 📧 Email: nandacomp1075@gmail.com
+- 💼 LinkedIn: [Your LinkedIn](https://linkedin.com/in/ikdknandasanjaya)
 
 ## 🙏 Acknowledgments
 
