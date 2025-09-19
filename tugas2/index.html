@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Interaktif Batubulan - Sukawati</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'monospace'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'cyber-blue': '#00d4ff',
+                        'cyber-purple': '#b537f2',
+                        'cyber-pink': '#ff006b',
+                        'cyber-green': '#39ff14',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .header {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
+        }
+        
+        .header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #3b82f6;
+            margin-bottom: 12px;
+        }
+        
+        .header p {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        
+        .status-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .status-item {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+        
+        .map-container {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        #map {
+            height: 600px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .info-panel {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .panel-icon {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-item {
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .feature-item:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .feature-icon {
+            font-size: 20px;
+        }
+        
+        .feature-text {
+            color: #475569;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            border-radius: 8px;
+            margin: 8px 0;
+            transition: all 0.2s ease;
+        }
+        
+        .legend-item:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .legend-text {
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .legend-desc {
+            color: #64748b;
+            font-size: 12px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .footer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .footer-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #3b82f6;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .leaflet-popup-tip {
+            background: white;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .popup-title {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .popup-description {
+            color: #475569;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        .popup-description strong {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        .location-info {
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .location-title {
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .location-desc {
+            color: #475569;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .status-indicators {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div style="font-size: 2.5rem; margin-bottom: 12px;">🗺️</div>
+            <h1>Peta Interaktif Batubulan - Sukawati</h1>
+            <h2>Sistem Informasi Geografis</h2>
+            <p>Tugas Praktik: Marker, Popup, dan Layer Control</p>
+            <p style="font-size: 0.9rem; color: #94a3b8;">Implementasi peta digital dengan teknologi Leaflet</p>
+            
+            <div class="status-indicators">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span style="color: #059669;">System Active</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot" style="background: #3b82f6;"></div>
+                    <span style="color: #2563eb;">Interactive Mode</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+
+        <!-- Info Panels -->
+        <div class="info-grid">
+            <!-- System Info Panel -->
+            <div class="info-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">📍</div>
+                    <h3 class="panel-title">Informasi Peta</h3>
+                </div>
+                
+                <div class="location-info">
+                    <div class="location-title">Lokasi Area</div>
+                    <div class="location-desc">Desa Batubulan, Kecamatan Sukawati, Kabupaten Gianyar, Bali</div>
+                </div>
+                
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <span class="feature-icon">🏠</span>
+                        <span class="feature-text">Marker rumah pribadi di Batubulan</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">🏛️</span>
+                        <span class="feature-text">Marker Kantor Desa Batubulan</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">🎓</span>
+                        <span class="feature-text">Marker sekolah (SD, SMP, SMK)</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">🏪</span>
+                        <span class="feature-text">Marker fasilitas umum (Pasar, Pura)</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">🛣️</span>
+                        <span class="feature-text">Polyline jalur rumah ke SD N 6 Batubulan</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">🏞️</span>
+                        <span class="feature-text">Polygon area Lapangan Batubulan</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">🗂️</span>
+                        <span class="feature-text">Layer control untuk mengatur tampilan</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Legend Panel -->
+            <div class="info-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">🎯</div>
+                    <h3 class="panel-title">Legenda</h3>
+                </div>
+                
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #dc2626;"></div>
+                    <div>
+                        <div class="legend-text">Jalur ke Sekolah</div>
+                        <div class="legend-desc">Rute rumah ke SD N 6 Batubulan</div>
+                    </div>
+                </div>
+                
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3b82f6; opacity: 0.7;"></div>
+                    <div>
+                        <div class="legend-text">Lapangan Batubulan</div>
+                        <div class="legend-desc">Fasilitas olahraga masyarakat</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="color: #64748b; font-size: 14px;">Status Sistem</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="status-dot"></div>
+                            <span style="color: #059669; font-size: 14px; font-weight: 500;">Operational</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-badge">
+                <div class="footer-dot"></div>
+                <span>Powered by Leaflet & Modern CSS</span>
+                <div class="footer-dot" style="background: #10b981;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    
+    <script>
+        // Inisialisasi peta dengan center di Batubulan (koordinat rumah)
+        var map = L.map('map').setView([-8.610426885732272, 115.25960319706928], 15);
+
+        // Definisi basemap
+        var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        });
+
+        var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: '© Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community'
+        });
+
+        // Set default basemap
+        osmLayer.addTo(map);
+
+        // Definisi custom icons
+        var homeIcon = L.divIcon({
+            html: '<div style="background: #10b981; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">🏠</div>',
+            iconSize: [32, 32],
+            className: 'custom-div-icon'
+        });
+
+        var officeIcon = L.divIcon({
+            html: '<div style="background: #3b82f6; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">🏛️</div>',
+            iconSize: [32, 32],
+            className: 'custom-div-icon'
+        });
+
+        var facilityIcon = L.divIcon({
+            html: '<div style="background: #f59e0b; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">📍</div>',
+            iconSize: [32, 32],
+            className: 'custom-div-icon'
+        });
+
+        // MARKERS
+        // 1. Rumah di Batubulan
+        var rumahMarker = L.marker([-8.610426885732272, 115.25960319706928], {icon: homeIcon}).bindPopup(`
+            <div class="popup-title">🏠 Rumah Pribadi</div>
+            <div class="popup-description">
+                <strong>Lokasi:</strong> Desa Batubulan<br>
+                <strong>Alamat:</strong> Batubulan, Sukawati, Gianyar<br>
+                <strong>Keterangan:</strong> Tempat tinggal di area strategis dekat pusat kerajinan patung dan ukiran Bali
+            </div>
+        `);
+
+        // 2. Kantor Desa Batubulan
+        var kantorMarker = L.marker([-8.612501308071163, 115.25366189780071], {icon: officeIcon}).bindPopup(`
+            <div class="popup-title">🏛️ Kantor Desa Batubulan</div>
+            <div class="popup-description">
+                <strong>Alamat:</strong> Batubulan, Sukawati, Gianyar<br>
+                <strong>Jam Operasional:</strong> 08:00 - 16:00 WITA<br>
+                <strong>Layanan:</strong> Administrasi desa, surat-menyurat, pelayanan masyarakat
+            </div>
+        `);
+
+        // 3. SD N 6 Batubulan
+        var sdMarker = L.marker([-8.611155225849114, 115.25921597570355], {icon: facilityIcon}).bindPopup(`
+            <div class="popup-title">🎓 SD Negeri 6 Batubulan</div>
+            <div class="popup-description">
+                <strong>Jenis:</strong> Sekolah Dasar Negeri<br>
+                <strong>Status:</strong> Aktif<br>
+                <strong>Fasilitas:</strong> Ruang kelas, perpustakaan, lapangan bermain
+            </div>
+        `);
+
+        // 4. SMP Negeri 5 Sukawati
+        var smpMarker = L.marker([-8.606556742437574, 115.25361510402729], {icon: facilityIcon}).bindPopup(`
+            <div class="popup-title">🎓 SMP Negeri 5 Sukawati</div>
+            <div class="popup-description">
+                <strong>Jenis:</strong> Sekolah Menengah Pertama<br>
+                <strong>Status:</strong> Sekolah Negeri<br>
+                <strong>Fasilitas:</strong> Laboratorium, perpustakaan, lapangan olahraga
+            </div>
+        `);
+
+        // 5. SMK Negeri 2 Sukawati
+        var smkMarker = L.marker([-8.609494370210658, 115.25833113296277], {icon: facilityIcon}).bindPopup(`
+            <div class="popup-title">🎓 SMK Negeri 2 Sukawati</div>
+            <div class="popup-description">
+                <strong>Jenis:</strong> Sekolah Menengah Kejuruan<br>
+                <strong>Status:</strong> Sekolah Negeri<br>
+                <strong>Keahlian:</strong> Teknik, Bisnis, dan program kejuruan lainnya
+            </div>
+        `);
+
+        // 6. Pasar Batubulan
+        var pasarMarker = L.marker([-8.610413128133521, 115.25871925115713], {icon: facilityIcon}).bindPopup(`
+            <div class="popup-title">🏪 Pasar Batubulan</div>
+            <div class="popup-description">
+                <strong>Jenis:</strong> Pasar tradisional<br>
+                <strong>Jam Buka:</strong> 06:00 - 18:00 WITA<br>
+                <strong>Produk:</strong> Sayuran, buah-buahan, kebutuhan sehari-hari
+            </div>
+        `);
+
+        // 7. Pura Masceti
+        var puraMarker = L.marker([-8.61029349589593, 115.25908753828067], {icon: facilityIcon}).bindPopup(`
+            <div class="popup-title">🕉️ Pura Masceti</div>
+            <div class="popup-description">
+                <strong>Jenis:</strong> Pura Hindu<br>
+                <strong>Fungsi:</strong> Tempat ibadah umat Hindu<br>
+                <strong>Keterangan:</strong> Pura yang terletak di area Batubulan
+            </div>
+        `);
+
+        // POLYLINES - Jalur jalan dari rumah ke SD N 6 Batubulan
+        var jalurKeSekolah = L.polyline([
+            [-8.610383861965087, 115.25952720558028], // Start point
+            [-8.61095483411061, 115.2595361652727],   // Mid point
+            [-8.611057181247718, 115.25920113713111]  // End point (SD)
+        ], {
+            color: '#dc2626',
+            weight: 4,
+            opacity: 0.8,
+            dashArray: '10, 5'
+        }).bindPopup(`
+            <div class="popup-title">🛣️ Jalur Rumah ke SD N 6 Batubulan</div>
+            <div class="popup-description">
+                <strong>Rute:</strong> Rumah → SD Negeri 6 Batubulan<br>
+                <strong>Jarak:</strong> ± 150 meter<br>
+                <strong>Estimasi Waktu:</strong> 2-3 menit jalan kaki<br>
+                <strong>Status:</strong> Jalur utama menuju sekolah
+            </div>
+        `);
+
+        // POLYGONS
+        // 1. Lapangan Batubulan
+        var lapanganBatubulan = L.polygon([
+            [-8.611795563665506, 115.25261485213255],
+            [-8.611795563665506, 115.25324751527094],
+            [-8.612319473089986, 115.25329547890239],
+            [-8.612317214861266, 115.25266281576398]
+        ], {
+            color: '#3b82f6',
+            fillColor: '#3b82f6',
+            fillOpacity: 0.3,
+            weight: 2
+        }).bindPopup(`
+            <div class="popup-title">⚽ Lapangan Batubulan</div>
+            <div class="popup-description">
+                <strong>Jenis Fasilitas:</strong> Lapangan serbaguna<br>
+                <strong>Aktivitas:</strong> Sepak bola, voli, kegiatan masyarakat<br>
+                <strong>Akses Publik:</strong> Terbuka untuk umum<br>
+                <strong>Kondisi:</strong> Terawat baik<br>
+                <strong>Lokasi:</strong> Area Batubulan
+            </div>
+        `);
+
+        // Group layers untuk layer control
+        var markers = L.layerGroup([rumahMarker, kantorMarker, sdMarker, smpMarker, smkMarker, pasarMarker, puraMarker]);
+        var polylines = L.layerGroup([jalurKeSekolah]);
+        var polygons = L.layerGroup([lapanganBatubulan]);
+
+        // Basemaps untuk layer control
+        var baseMaps = {
+            "🗺️ OpenStreetMap": osmLayer,
+            "🛰️ Satellite": satelliteLayer
+        };
+
+        // Overlay maps untuk layer control
+        var overlayMaps = {
+            "📍 Lokasi Penting": markers,
+            "🛣️ Jalur ke Sekolah": polylines,
+            "🏞️ Lapangan Batubulan": polygons
+        };
+
+        // Tambahkan layer control
+        var layerControl = L.control.layers(baseMaps, overlayMaps, {
+            position: 'topright',
+            collapsed: false
+        }).addTo(map);
+
+        // Tambahkan semua overlay secara default
+        markers.addTo(map);
+        polylines.addTo(map);
+        polygons.addTo(map);
+
+        // Tambahkan scale control
+        L.control.scale({
+            position: 'bottomleft',
+            imperial: false
+        }).addTo(map);
+
+        // Event listener untuk menampilkan koordinat saat klik
+        map.on('click', function(e) {
+            console.log("Koordinat: " + e.latlng.lat + ", " + e.latlng.lng);
+        });
+
+        // Fit bounds untuk menampilkan semua marker
+        var group = new L.featureGroup([rumahMarker, kantorMarker, sdMarker, smpMarker, smkMarker, pasarMarker, puraMarker]);
+        map.fitBounds(group.getBounds().pad(0.1));
+    </script>
+</body>
+</html>
