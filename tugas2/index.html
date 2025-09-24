@@ -482,8 +482,20 @@
             className: 'custom-div-icon'
         });
 
-        var facilityIcon = L.divIcon({
-            html: '<div style="background: #f59e0b; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">📍</div>',
+        var schoolIcon = L.divIcon({
+            html: '<div style="background: #8b5cf6; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">🎓</div>',
+            iconSize: [32, 32],
+            className: 'custom-div-icon'
+        });
+
+        var marketIcon = L.divIcon({
+            html: '<div style="background: #f59e0b; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">🏪</div>',
+            iconSize: [32, 32],
+            className: 'custom-div-icon'
+        });
+
+        var templeIcon = L.divIcon({
+            html: '<div style="background: #ef4444; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">🕉️</div>',
             iconSize: [32, 32],
             className: 'custom-div-icon'
         });
@@ -510,7 +522,7 @@
         `);
 
         // 3. SD N 6 Batubulan
-        var sdMarker = L.marker([-8.611155225849114, 115.25921597570355], {icon: facilityIcon}).bindPopup(`
+        var sdMarker = L.marker([-8.611155225849114, 115.25921597570355], {icon: schoolIcon}).bindPopup(`
             <div class="popup-title">🎓 SD Negeri 6 Batubulan</div>
             <div class="popup-description">
                 <strong>Jenis:</strong> Sekolah Dasar Negeri<br>
@@ -520,7 +532,7 @@
         `);
 
         // 4. SMP Negeri 5 Sukawati
-        var smpMarker = L.marker([-8.606556742437574, 115.25361510402729], {icon: facilityIcon}).bindPopup(`
+        var smpMarker = L.marker([-8.606556742437574, 115.25361510402729], {icon: schoolIcon}).bindPopup(`
             <div class="popup-title">🎓 SMP Negeri 5 Sukawati</div>
             <div class="popup-description">
                 <strong>Jenis:</strong> Sekolah Menengah Pertama<br>
@@ -530,7 +542,7 @@
         `);
 
         // 5. SMK Negeri 2 Sukawati
-        var smkMarker = L.marker([-8.609494370210658, 115.25833113296277], {icon: facilityIcon}).bindPopup(`
+        var smkMarker = L.marker([-8.609494370210658, 115.25833113296277], {icon: schoolIcon}).bindPopup(`
             <div class="popup-title">🎓 SMK Negeri 2 Sukawati</div>
             <div class="popup-description">
                 <strong>Jenis:</strong> Sekolah Menengah Kejuruan<br>
@@ -540,7 +552,7 @@
         `);
 
         // 6. Pasar Batubulan
-        var pasarMarker = L.marker([-8.610413128133521, 115.25871925115713], {icon: facilityIcon}).bindPopup(`
+        var pasarMarker = L.marker([-8.610413128133521, 115.25871925115713], {icon: marketIcon}).bindPopup(`
             <div class="popup-title">🏪 Pasar Batubulan</div>
             <div class="popup-description">
                 <strong>Jenis:</strong> Pasar tradisional<br>
@@ -550,7 +562,7 @@
         `);
 
         // 7. Pura Masceti
-        var puraMarker = L.marker([-8.61029349589593, 115.25908753828067], {icon: facilityIcon}).bindPopup(`
+        var puraMarker = L.marker([-8.61029349589593, 115.25908753828067], {icon: templeIcon}).bindPopup(`
             <div class="popup-title">🕉️ Pura Masceti</div>
             <div class="popup-description">
                 <strong>Jenis:</strong> Pura Hindu<br>

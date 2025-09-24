@@ -29,21 +29,17 @@ Memahami dan mengimplementasikan:
 
 ## 📸 Screenshots
 
-### Desktop View
-![Desktop Screenshot](screenshots/desktop-view.png)
-*Tampilan lengkap peta interaktif dengan layer control dan info panel*
+### Desktop View - Peta Interaktif Lengkap
+![Desktop Screenshot](screenshots/Screenshot%202025-09-19%20at%2013.58.18.png)
+*Tampilan lengkap peta interaktif dengan layer control, custom icons, dan polyline jalur ke sekolah*
 
-### Mobile View
-![Mobile Screenshot](screenshots/mobile-view.png)
-*Responsive design untuk perangkat mobile*
+### Popup Detail - Informasi Pasar Batubulan
+![Popup Info](screenshots/Screenshot%202025-09-19%20at%2013.59.16.png)
+*Detail informasi lokasi Pasar Batubulan dengan popup yang informatif dan modern*
 
-### Layer Control
-![Layer Control](screenshots/layer-control.png)
-*Fitur layer control untuk mengatur basemap dan overlay*
-
-### Popup Information
-![Popup Info](screenshots/popup-info.png)
-*Detail informasi lokasi dalam popup yang modern*
+### Polygon Area - Lapangan Batubulan
+![Polygon Area](screenshots/Screenshot%202025-09-19%20at%2013.59.32.png)
+*Polygon area Lapangan Batubulan dengan popup detail fasilitas dan informasi akses*
 
 ## ✨ Fitur Implementasi
 
@@ -104,14 +100,13 @@ Memahami dan mengimplementasikan:
 ## 🏗️ Project Structure
 
 ```
-tugas-praktik/
+tugas2/
 ├── index.html              # Main application file
 ├── README.md               # Project documentation
 ├── screenshots/            # Screenshot images
-│   ├── desktop-view.png
-│   ├── mobile-view.png
-│   ├── layer-control.png
-│   └── popup-info.png
+│   ├── Screenshot 2025-09-19 at 13.58.18.png
+│   ├── Screenshot 2025-09-19 at 13.59.16.png
+│   └── Screenshot 2025-09-19 at 13.59.32.png
 └── assets/                 # Additional resources (if any)
 ```
 
@@ -128,7 +123,7 @@ tugas-praktik/
    ```bash
    # Via Git
    git clone [repository-url]
-   cd tugas-praktik
+   cd leaflet-pertemuan2/tugas2
    
    # Atau download ZIP dan extract
    ```
