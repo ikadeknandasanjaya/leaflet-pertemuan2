@@ -105,13 +105,16 @@
             const nama = feat.properties?.[nameKey] || feat.properties?.name || 'Wilayah';
             const color = hashColor(nama);
             if (styleMode === 'kabupaten') {
+              // Kabupaten: outline BERWARNA unik + lebih tebal + dashed halus
               return { color: color, weight: 3, dashArray: '8,4', fillOpacity: 0 };
             }
+            // Kecamatan: fill berwarna
             return { color: color, weight: 1, fillColor: color, fillOpacity: 0.28 };
           },
           onEachFeature: function(feat, lyr) {
             const nama = feat.properties?.[nameKey] || feat.properties?.name || 'Wilayah';
-            const kab = feat.properties?.WADMKK || feat.properties?.Kabupaten || feat.properties?.KABUPATEN || feat.properties?.nm_dati2 || '';
+            // Coba tampilkan hierarki jika ada
+            const kab = feat.properties?.WADMKK || feat.properties?.Kabupaten || feat.properties?.KABUPATEN || ''; 
             const title = styleMode === 'kabupaten' ? 'Kabupaten/Kota' : 'Kecamatan';
             const parentLine = (styleMode === 'kecamatan' && kab) ? `<br><small><i>Kab/Kota: ${kab}</i></small>` : '';
             lyr.bindPopup(`<b>${title}: ${nama}</b>${parentLine}`);
@@ -119,6 +122,7 @@
         });
         layer.addTo(targetGroup);
 
+        // Legend contoh
         const shown = new Set();
         const container = styleMode === 'kabupaten' ? legendKab : legendKec;
         data.features.slice(0, 15).forEach(f => {
@@ -130,9 +134,8 @@
 
     const daerah = ['51.01_Jembrana','51.02_Tabanan','51.03_Badung','51.04_Gianyar','51.05_Klungkung','51.06_Bangli','51.07_Karangasem','51.08_Buleleng','51.71_Kota_Denpasar'];
 
-    // Tambahkan key yang sesuai dataset Anda: nm_dati2 (kab/kota) dan nm_kecamatan (kecamatan)
-    const propKabupaten = ['nm_dati2','NM_DATI2','Nm_Dati2','WADMKK','kabupaten','Kabupaten','KABUPATEN','Kab_Kota','KAB_KOTA','kab_kota','NM_KAB','NAMOBJ','namobj','name'];
-    const propKecamatan = ['nm_kecamatan','NM_KECAMATAN','Nm_Kecamatan','WADMKC','kecamatan','Kecamatan','KECAMATAN','NM_KEC','NAMOBJ','namobj','name'];
+    const propKabupaten = ['WADMKK','kabupaten','Kabupaten','KABUPATEN','Kab_Kota','KAB_KOTA','kab_kota','NM_KAB','NAMOBJ','namobj','name'];
+    const propKecamatan = ['WADMKC','kecamatan','Kecamatan','KECAMATAN','NM_KEC','NAMOBJ','namobj','name'];
 
     daerah.forEach(kode => {
       loadGeoJSON(`geojson/${kode}/${kode}.geojson`, propKabupaten, kabupatenLayer, 'kabupaten');
